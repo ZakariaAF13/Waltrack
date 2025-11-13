@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -42,10 +42,19 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const AddTransactionDialog = () => {
-  const [open, setOpen] = useState(false);
+interface AddTransactionDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export const AddTransactionDialog = ({ open: controlledOpen, onOpenChange }: AddTransactionDialogProps = {}) => {
+  const [internalOpen, setInternalOpen] = useState(false);
   const { addTransaction, categories } = useWallet();
   const { toast } = useToast();
+
+  // Use controlled or internal state
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
+  const setOpen = onOpenChange || setInternalOpen;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
