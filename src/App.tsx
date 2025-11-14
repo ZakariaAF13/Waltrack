@@ -9,6 +9,7 @@ import { AddTransactionDialog } from './components/AddTransactionDialog';
 import { ExpenseChart } from './components/ExpenseChart';
 import { IncomeExpenseChart } from './components/IncomeExpenseChart';
 import { Toaster } from './components/ui/toaster';
+import { Sidebar } from './components/Sidebar';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 
@@ -20,6 +21,7 @@ function WaltrackContent() {
   const [lang, setLang] = useState<'id' | 'en'>('id');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [activeView, setActiveView] = useState<'home' | 'reports' | 'profile'>('home');
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -97,38 +99,47 @@ function WaltrackContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors">
-      {/* Top Navbar (Desktop) */}
-      <header className="hidden md:flex justify-between items-center bg-white dark:bg-gray-800 shadow px-6 py-3">
-        <h1 className="text-xl font-bold text-teal-600">Waltrack</h1>
-        <nav className="flex gap-6 text-gray-600 dark:text-gray-300">
-          <button onClick={() => setActiveView('home')} className="hover:text-teal-600 transition">
-            {t[lang].saldo}
-          </button>
-          <button onClick={() => setActiveView('home')} className="hover:text-teal-600 transition">
-            {t[lang].transaksi}
-          </button>
-          <button onClick={() => setActiveView('reports')} className="hover:text-teal-600 transition">
-            {t[lang].laporan}
-          </button>
-          <button onClick={() => setActiveView('profile')} className="hover:text-teal-600 transition">
-            {t[lang].profil}
-          </button>
-        </nav>
-        <div className="flex gap-3">
-          <Button variant="ghost" onClick={toggleLang} className="gap-2">
-            <Globe size={18} /> {t[lang].ubahBahasa}
-          </Button>
-          <Button variant="ghost" onClick={toggleDarkMode}>
-            {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-          </Button>
-          <Button onClick={() => setShowAddDialog(true)} className="bg-teal-600 hover:bg-teal-700 gap-2">
-            <PlusCircle size={18} /> {t[lang].tambahTransaksi}
-          </Button>
-        </div>
-      </header>
+    <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors">
+      {/* Sidebar */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
+        activeView={activeView}
+        onNavigate={setActiveView}
+        lang={lang}
+      />
 
-      <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8">
+      {/* Main Content */}
+      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'}`}>
+        {/* Top Bar (Mobile & Desktop) */}
+        <header className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-semibold">
+              {activeView === 'home' && t[lang].saldo}
+              {activeView === 'reports' && t[lang].laporan}
+              {activeView === 'profile' && t[lang].profil}
+            </h2>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" onClick={toggleLang} className="hidden md:flex">
+              <Globe size={18} />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={toggleDarkMode}>
+              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </Button>
+            <Button 
+              onClick={() => setShowAddDialog(true)} 
+              className="hidden md:flex bg-teal-600 hover:bg-teal-700 gap-2"
+              size="sm"
+            >
+              <PlusCircle size={16} />
+              <span className="hidden lg:inline">{t[lang].tambahTransaksi}</span>
+            </Button>
+          </div>
+        </header>
+
+        <main className="flex-1 p-4 md:p-6 pb-24 md:pb-6 overflow-auto">
         {/* Home View */}
         {activeView === 'home' && (
           <>
@@ -287,10 +298,10 @@ function WaltrackContent() {
         >
           <Camera className="text-white" size={24} />
         </Button>
-      </main>
+        </main>
 
-      {/* Bottom Navbar (Mobile Only) */}
-      <nav className="md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-800 border-t dark:border-gray-700 flex justify-around py-2 shadow-lg z-50">
+        {/* Bottom Navbar (Mobile Only) */}
+        <nav className="md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-800 border-t dark:border-gray-700 flex justify-around py-2 shadow-lg z-50">
         <Button
           variant="ghost"
           size="icon"
@@ -337,10 +348,11 @@ function WaltrackContent() {
           <User size={20} />
           <span className="text-xs">{t[lang].profil}</span>
         </Button>
-      </nav>
+        </nav>
 
-      <AddTransactionDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
-      <Toaster />
+        <AddTransactionDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
+        <Toaster />
+      </div>
     </div>
   );
 }
