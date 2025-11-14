@@ -27,6 +27,33 @@ Aplikasi web modern untuk mengelola dan memantau keuangan pribadi Anda dengan fi
 
 ---
 
+## ⚡ Performance Optimizations
+
+Diimplementasikan untuk mempercepat load dan menjaga UI tetap responsif:
+
+- Bundling & Minification
+  - Vite + esbuild minify, target ES2020
+  - Code splitting (manualChunks: vendor, charts)
+  - Drop `console` dan `debugger` di production
+- Tree-shaking friendly imports
+  - Import hanya yang dipakai dari library (shadcn/ui, lucide-react, recharts)
+- Lazy Loading (Dynamic Import)
+  - Komponen chart di-load dengan `React.lazy` + `Suspense`
+  - Skeleton fallback untuk UX mulus saat loading
+- Web Worker untuk operasi berat
+  - Perhitungan laporan (agregasi bulanan & kategori) berjalan di worker (`src/workers/analytics.worker.ts`)
+  - Fallback ke main thread jika worker gagal
+- Caching & Build Targets
+  - Vite default caching + hashed assets, sourcemap off untuk build
+- Gambar & Assets (rekomendasi)
+  - Gunakan WebP/AVIF dan `loading="lazy"` pada `<img>`
+
+Build production:
+```bash
+npm run build
+npm run preview # atau: npx vite preview
+```
+
 ## ✨ Fitur Utama
 
 - 📊 **Dashboard Interaktif** - Lihat statistik keuangan Anda secara real-time

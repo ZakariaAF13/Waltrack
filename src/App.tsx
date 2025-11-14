@@ -1,17 +1,23 @@
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { WalletProvider, useWallet } from './context/WalletContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Home, PlusCircle, BarChart2, User, Camera, Upload, Sun, Moon, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AddTransactionDialog } from './components/AddTransactionDialog';
-import { ExpenseChart } from './components/ExpenseChart';
-import { IncomeExpenseChart } from './components/IncomeExpenseChart';
 import { Toaster } from './components/ui/toaster';
 import { Sidebar } from './components/Sidebar';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const LazyIncomeExpenseChart = lazy(() =>
+  import('./components/IncomeExpenseChart').then((m) => ({ default: m.IncomeExpenseChart }))
+);
+const LazyExpenseChart = lazy(() =>
+  import('./components/ExpenseChart').then((m) => ({ default: m.ExpenseChart }))
+);
 
 function WaltrackContent() {
   const { transactions, stats } = useWallet();
@@ -207,8 +213,38 @@ function WaltrackContent() {
           <section id="reports">
             <h2 className="text-2xl font-bold mb-6">{t[lang].laporan}</h2>
             <div className="grid gap-6 md:grid-cols-2">
-              <IncomeExpenseChart />
-              <ExpenseChart />
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>
+                        <Skeleton className="h-6 w-48" />
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Skeleton className="h-[300px] w-full" />
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <LazyIncomeExpenseChart />
+              </Suspense>
+              <Suspense
+                fallback={
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>
+                        <Skeleton className="h-6 w-48" />
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Skeleton className="h-[300px] w-full" />
+                    </CardContent>
+                  </Card>
+                }
+              >
+                <LazyExpenseChart />
+              </Suspense>
             </div>
           </section>
         )}
