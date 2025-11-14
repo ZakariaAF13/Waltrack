@@ -258,7 +258,7 @@ function WaltrackContent() {
                 <input
                   type="file"
                   accept="image/*"
-                  capture="environment"
+                  {...({ capture: 'environment' } as any)}
                   onChange={handleFileChange}
                   className="mb-4 w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 dark:file:bg-teal-900 dark:file:text-teal-100"
                 />

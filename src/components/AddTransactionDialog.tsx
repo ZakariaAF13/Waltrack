@@ -90,12 +90,14 @@ export const AddTransactionDialog = ({ open: controlledOpen, onOpenChange }: Add
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="lg" className="gap-2">
-          <Plus className="h-5 w-5" />
-          Tambah Transaksi
-        </Button>
-      </DialogTrigger>
+      {controlledOpen === undefined && (
+        <DialogTrigger asChild>
+          <Button size="lg" className="gap-2">
+            <Plus className="h-5 w-5" />
+            Tambah Transaksi
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Tambah Transaksi Baru</DialogTitle>
