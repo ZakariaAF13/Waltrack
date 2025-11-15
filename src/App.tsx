@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Home, PlusCircle, BarChart2, User, Camera, Sun, Moon, Globe, History, Wallet, ArrowDownCircle, ArrowUpCircle, ListOrdered, Search, Download, ChevronRight, TrendingDown, Calendar, Lock, LogOut } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AddTransactionDialog } from './components/AddTransactionDialog';
 import { ProfileEditDialog } from './components/ProfileEditDialog';
@@ -12,7 +13,6 @@ import { ExpenseAnalysisDialog } from './components/ExpenseAnalysisDialog';
 import { BudgetPlanDialog } from './components/BudgetPlanDialog';
 import { ChangePinDialog } from './components/ChangePinDialog';
 import { Toaster } from './components/ui/toaster';
-import { Sidebar } from './components/Sidebar';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './components/ui/alert-dialog';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
@@ -33,7 +33,6 @@ function WaltrackContent() {
   const [lang, setLang] = useState<'id' | 'en'>('id');
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [activeView, setActiveView] = useState<'home' | 'reports' | 'profile' | 'history'>('home');
-  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024);
   const [historyFilter, setHistoryFilter] = useState<'all' | 'income' | 'expense'>('all');
   const [historyQuery, setHistoryQuery] = useState('');
   const [datePreset, setDatePreset] = useState<'all' | 'today' | 'week' | 'month' | 'custom'>('all');
@@ -261,21 +260,80 @@ function WaltrackContent() {
   };
 
   return (
-    <div className="min-h-screen flex bg-background text-foreground transition-colors">
-      {/* Sidebar */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        onToggle={() => setSidebarOpen(!sidebarOpen)}
-        activeView={activeView}
-        onNavigate={setActiveView}
-        lang={lang}
-      />
+    <div className="min-h-screen bg-background text-foreground transition-colors">
+      {/* Responsive Layout: Centered container with sidebar (desktop only) + content */}
+      <div className="flex w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+        {/* Sidebar */}
+        <aside className="hidden lg:block w-64 h-screen sticky top-0 flex-shrink-0 border-r border-border">
+          <div className="flex flex-col h-full py-6">
+            {/* Header */}
+            <div className="flex items-center gap-2 px-4 mb-8">
+              <Wallet className="h-6 w-6 text-teal-600" />
+              <h1 className="text-xl font-bold text-teal-600">Waltrack</h1>
+            </div>
 
-      {/* Main Content */}
-      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'}`}>
+            {/* Menu Items */}
+            <nav className="flex-1 px-4 space-y-2">
+              <Button
+                variant={activeView === 'home' ? 'default' : 'ghost'}
+                className={cn(
+                  'w-full justify-start gap-3',
+                  activeView === 'home' && 'bg-teal-600 hover:bg-teal-700 text-white'
+                )}
+                onClick={() => setActiveView('home')}
+              >
+                <Home size={20} />
+                <span>Dashboard</span>
+              </Button>
+              <Button
+                variant={activeView === 'reports' ? 'default' : 'ghost'}
+                className={cn(
+                  'w-full justify-start gap-3',
+                  activeView === 'reports' && 'bg-teal-600 hover:bg-teal-700 text-white'
+                )}
+                onClick={() => setActiveView('reports')}
+              >
+                <BarChart2 size={20} />
+                <span>{lang === 'id' ? 'Laporan' : 'Reports'}</span>
+              </Button>
+              <Button
+                variant={activeView === 'history' ? 'default' : 'ghost'}
+                className={cn(
+                  'w-full justify-start gap-3',
+                  activeView === 'history' && 'bg-teal-600 hover:bg-teal-700 text-white'
+                )}
+                onClick={() => setActiveView('history')}
+              >
+                <History size={20} />
+                <span>{lang === 'id' ? 'Riwayat' : 'History'}</span>
+              </Button>
+              <Button
+                variant={activeView === 'profile' ? 'default' : 'ghost'}
+                className={cn(
+                  'w-full justify-start gap-3',
+                  activeView === 'profile' && 'bg-teal-600 hover:bg-teal-700 text-white'
+                )}
+                onClick={() => setActiveView('profile')}
+              >
+                <User size={20} />
+                <span>{lang === 'id' ? 'Profil' : 'Profile'}</span>
+              </Button>
+            </nav>
+
+            {/* Footer */}
+            <div className="px-4 pt-4 border-t border-border">
+              <p className="text-xs text-muted-foreground text-center">
+                © 2025 Waltrack
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
         {/* Top Bar (Mobile & Desktop) */}
         <header className="bg-background border-b border-border pt-[env(safe-area-inset-top)] py-3 sticky top-0 z-30">
-          <div className="w-full max-w-3xl mx-auto px-3 md:px-6 flex items-center justify-between">
+          <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
               {/* Brand on mobile */}
               <div className="flex items-center gap-2 md:hidden">
@@ -310,8 +368,8 @@ function WaltrackContent() {
           </div>
         </header>
 
-        <main className="flex-1 py-4 md:py-6 pb-[calc(env(safe-area-inset-bottom)+6rem)] md:pb-8 overflow-auto">
-          <div className="w-full max-w-3xl mx-auto px-3 md:px-6 space-y-8">
+        <main className="flex-1 py-4 sm:py-6 md:py-8 pb-[calc(env(safe-area-inset-bottom)+6rem)] md:pb-12 overflow-auto">
+          <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 space-y-8">
         {/* Home View */}
         {activeView === 'home' && (
           <>
@@ -450,51 +508,52 @@ function WaltrackContent() {
               {/* Search */}
               <div className="relative w-full">
                 <input
-                  className="w-full h-10 rounded-md border border-input bg-transparent pl-9 pr-3 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="w-full h-12 rounded-full border border-input bg-transparent pl-11 pr-4 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                   placeholder={t[lang].cariTransaksi}
                   value={historyQuery}
                   onChange={(e) => setHistoryQuery(e.target.value)}
                 />
-                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               </div>
-              
-              {/* Type Filter */}
-              <div className="flex items-center gap-2 overflow-x-auto">
-                <Button variant={historyFilter === 'all' ? 'default' : 'outline'} size="sm" onClick={() => setHistoryFilter('all')}>
-                  {t[lang].semua}
-                </Button>
-                <Button variant={historyFilter === 'income' ? 'default' : 'outline'} size="sm" onClick={() => setHistoryFilter('income')}>
-                  {t[lang].pemasukanShort}
-                </Button>
-                <Button variant={historyFilter === 'expense' ? 'default' : 'outline'} size="sm" onClick={() => setHistoryFilter('expense')}>
-                  {t[lang].pengeluaranShort}
-                </Button>
-              </div>
-              
-              {/* Date & Export */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                <select
-                  className="h-10 rounded-md border border-input bg-transparent px-2 text-sm flex-1"
-                  value={datePreset}
-                  onChange={(e) => setDatePreset(e.target.value as any)}
-                >
-                  <option value="all">{t[lang].semua}</option>
-                  <option value="today">{t[lang].hariIni}</option>
-                  <option value="week">{t[lang].mingguIni}</option>
-                  <option value="month">{t[lang].bulanIni}</option>
-                  <option value="custom">{t[lang].rentangTanggal}</option>
-                </select>
-                <Button variant="outline" size="sm" className="gap-2 whitespace-nowrap" onClick={exportCSV}>
-                  <Download size={16} /> {t[lang].eksporCsv}
-                </Button>
+
+              {/* Filters + Preset/Export (stack on mobile, split on desktop) */}
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div className="flex items-center gap-3 overflow-x-auto">
+                  <Button variant={historyFilter === 'all' ? 'default' : 'outline'} size="default" onClick={() => setHistoryFilter('all')}>
+                    {t[lang].semua}
+                  </Button>
+                  <Button variant={historyFilter === 'income' ? 'default' : 'outline'} size="default" onClick={() => setHistoryFilter('income')}>
+                    {t[lang].pemasukanShort}
+                  </Button>
+                  <Button variant={historyFilter === 'expense' ? 'default' : 'outline'} size="default" onClick={() => setHistoryFilter('expense')}>
+                    {t[lang].pengeluaranShort}
+                  </Button>
+                </div>
+
+                <div className="flex items-center gap-3 md:ml-auto">
+                  <select
+                    className="h-12 rounded-md border border-input bg-transparent px-3 text-base"
+                    value={datePreset}
+                    onChange={(e) => setDatePreset(e.target.value as any)}
+                  >
+                    <option value="all">{t[lang].semua}</option>
+                    <option value="today">{t[lang].hariIni}</option>
+                    <option value="week">{t[lang].mingguIni}</option>
+                    <option value="month">{t[lang].bulanIni}</option>
+                    <option value="custom">{t[lang].rentangTanggal}</option>
+                  </select>
+                  <Button variant="outline" size="default" className="gap-2 whitespace-nowrap" onClick={exportCSV}>
+                    <Download size={18} /> {t[lang].eksporCsv}
+                  </Button>
+                </div>
               </div>
               
               {/* Custom Date Range */}
               {datePreset === 'custom' && (
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                  <input type="date" className="h-10 rounded-md border border-input bg-transparent px-2 text-sm flex-1" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                  <span className="text-center sm:px-2">—</span>
-                  <input type="date" className="h-10 rounded-md border border-input bg-transparent px-2 text-sm flex-1" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <input type="date" className="h-12 rounded-md border border-input bg-transparent px-3 text-base flex-1" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                  <span className="text-center sm:px-2 text-lg">—</span>
+                  <input type="date" className="h-12 rounded-md border border-input bg-transparent px-3 text-base flex-1" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                 </div>
               )}
             </div>
@@ -520,26 +579,26 @@ function WaltrackContent() {
                         </h3>
                         {grouped[key].map((tn) => (
                           <Card key={tn.id} className="rounded-xl shadow-sm hover:shadow-md bg-card transition border-0">
-                            <CardContent className="flex justify-between items-center p-4">
-                              <div className="flex items-center gap-3">
-                                <div className={`h-9 w-9 rounded-full flex items-center justify-center ${tn.type === 'expense' ? 'bg-red-100 dark:bg-red-900/40' : 'bg-green-100 dark:bg-green-900/40'}`}>
+                            <CardContent className="flex justify-between items-center p-5">
+                              <div className="flex items-center gap-4">
+                                <div className={`h-12 w-12 rounded-full flex items-center justify-center ${tn.type === 'expense' ? 'bg-red-100 dark:bg-red-900/40' : 'bg-green-100 dark:bg-green-900/40'}`}>
                                   {tn.type === 'expense' ? (
-                                    <ArrowUpCircle size={18} className="text-red-600 dark:text-red-400" />
+                                    <ArrowUpCircle size={22} className="text-red-600 dark:text-red-400" />
                                   ) : (
-                                    <ArrowDownCircle size={18} className="text-green-600 dark:text-green-400" />
+                                    <ArrowDownCircle size={22} className="text-green-600 dark:text-green-400" />
                                   )}
                                 </div>
                                 <div>
-                                  <p className="font-semibold">{tn.description}</p>
-                                  <p className="text-xs text-muted-foreground">
+                                  <p className="font-semibold text-base">{tn.description}</p>
+                                  <p className="text-sm text-muted-foreground">
                                     {format(new Date(tn.date), 'dd MMM yyyy', { locale: idLocale })}
                                   </p>
                                   <div className="mt-1">
-                                    <Badge variant="secondary" className="text-xs">{tn.category}</Badge>
+                                    <Badge variant="secondary" className="text-sm">{tn.category}</Badge>
                                   </div>
                                 </div>
                               </div>
-                              <p className={`${tn.type === 'expense' ? 'text-red-500' : 'text-green-600'} font-bold`}>
+                              <p className={`${tn.type === 'expense' ? 'text-red-500' : 'text-green-600'} font-bold text-lg`}>
                                 {tn.type === 'expense' ? '-' : '+'}
                                 {formatCurrency(tn.amount)}
                               </p>
@@ -557,54 +616,54 @@ function WaltrackContent() {
 
         {/* Profile View */}
         {activeView === 'profile' && (
-          <section id="profile" className="space-y-6">
+          <section id="profile" className="space-y-6 w-full max-w-4xl mx-auto">
             {/* User Card */}
-            <Card className="shadow-md rounded-2xl bg-card border-0 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setShowProfileEdit(true)}>
-              <CardContent className="p-4">
+            <Card className="shadow-lg rounded-2xl bg-card border-0 cursor-pointer hover:shadow-xl transition-shadow" onClick={() => setShowProfileEdit(true)}>
+              <CardContent className="p-6">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-teal-600 rounded-full flex items-center justify-center">
-                      <User size={24} className="text-white" />
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center">
+                      <User size={32} className="text-white" />
                     </div>
                     <div>
-                      <h3 className="font-bold">{userName}</h3>
-                      <p className="text-sm text-muted-foreground">{userEmail}</p>
+                      <h3 className="font-bold text-lg">{userName}</h3>
+                      <p className="text-base text-muted-foreground">{userEmail}</p>
                     </div>
                   </div>
-                  <ChevronRight size={20} className="text-muted-foreground" />
+                  <ChevronRight size={24} className="text-muted-foreground" />
                 </div>
               </CardContent>
             </Card>
 
-            {/* Menu List */}
-            <div className="space-y-0 bg-card rounded-2xl shadow-md overflow-hidden">
+            {/* Menu List - single wide list */}
+            <div className="bg-card rounded-2xl shadow-md overflow-hidden divide-y divide-border">
               <button 
                 onClick={() => setShowExpenseAnalysis(true)}
-                className="w-full flex items-center gap-3 p-4 hover:bg-accent transition-colors border-b border-border"
+                className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
               >
-                <TrendingDown size={20} className="text-muted-foreground" />
-                <span className="font-medium">{lang === 'id' ? 'Analisa pengeluaran' : 'Expense Analysis'}</span>
+                <TrendingDown size={24} className="text-muted-foreground" />
+                <span className="font-medium text-base">{lang === 'id' ? 'Analisa pengeluaran' : 'Expense Analysis'}</span>
               </button>
               <button 
                 onClick={() => setShowBudgetPlan(true)}
-                className="w-full flex items-center gap-3 p-4 hover:bg-accent transition-colors border-b border-border"
+                className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
               >
-                <Calendar size={20} className="text-muted-foreground" />
-                <span className="font-medium">{lang === 'id' ? 'rencanakan' : 'Planning'}</span>
+                <Calendar size={24} className="text-muted-foreground" />
+                <span className="font-medium text-base">{lang === 'id' ? 'rencanakan' : 'Planning'}</span>
               </button>
               <button 
                 onClick={() => setShowChangePin(true)}
-                className="w-full flex items-center gap-3 p-4 hover:bg-accent transition-colors border-b border-border"
+                className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
               >
-                <Lock size={20} className="text-muted-foreground" />
-                <span className="font-medium">{lang === 'id' ? 'ubah pin' : 'Change PIN'}</span>
+                <Lock size={24} className="text-muted-foreground" />
+                <span className="font-medium text-base">{lang === 'id' ? 'ubah pin' : 'Change PIN'}</span>
               </button>
               <button 
                 onClick={() => setShowLogoutConfirm(true)}
-                className="w-full flex items-center gap-3 p-4 hover:bg-accent transition-colors"
+                className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
               >
-                <LogOut size={20} className="text-red-600" />
-                <span className="font-medium text-red-600">{lang === 'id' ? 'akhiri sesi' : 'Logout'}</span>
+                <LogOut size={24} className="text-red-600" />
+                <span className="font-medium text-base text-red-600">{lang === 'id' ? 'akhiri sesi' : 'Logout'}</span>
               </button>
             </div>
           </section>
@@ -756,6 +815,7 @@ function WaltrackContent() {
           </AlertDialogContent>
         </AlertDialog>
         <Toaster />
+        </div>
       </div>
     </div>
   );
