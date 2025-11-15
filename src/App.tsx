@@ -105,7 +105,7 @@ function WaltrackContent() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors">
+    <div className="min-h-screen flex bg-background text-foreground transition-colors">
       {/* Sidebar */}
       <Sidebar
         isOpen={sidebarOpen}
@@ -118,9 +118,9 @@ function WaltrackContent() {
       {/* Main Content */}
       <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'}`}>
         {/* Top Bar (Mobile & Desktop) */}
-        <header className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+        <header className="bg-background border-b border-border px-4 md:px-6 pt-[env(safe-area-inset-top)] py-3 flex items-center justify-between sticky top-0 z-30">
           <div className="flex items-center gap-3">
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold">
               {activeView === 'home' && t[lang].saldo}
               {activeView === 'reports' && t[lang].laporan}
               {activeView === 'profile' && t[lang].profil}
@@ -145,53 +145,54 @@ function WaltrackContent() {
           </div>
         </header>
 
-        <main className="flex-1 p-4 md:p-6 pb-24 md:pb-6 overflow-auto">
+        <main className="flex-1 px-4 md:px-6 py-4 md:py-6 pb-[calc(env(safe-area-inset-bottom)+6rem)] md:pb-8 overflow-auto">
+          <div className="w-full max-w-6xl mx-auto space-y-8">
         {/* Home View */}
         {activeView === 'home' && (
           <>
-            <section id="dashboard" className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <Card className="shadow-md rounded-2xl dark:bg-gray-800 border-0">
+            <section id="dashboard" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <Card className="shadow-md rounded-2xl bg-card border-0">
                 <CardContent className="p-4">
-                  <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t[lang].saldo}</h2>
+                  <h2 className="text-sm font-medium text-muted-foreground">{t[lang].saldo}</h2>
                   <p className="text-2xl font-bold text-teal-600 mt-2">{formatCurrency(stats.balance)}</p>
                 </CardContent>
               </Card>
-              <Card className="shadow-md rounded-2xl dark:bg-gray-800 border-0">
+              <Card className="shadow-md rounded-2xl bg-card border-0">
                 <CardContent className="p-4">
-                  <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t[lang].pemasukan}</h2>
+                  <h2 className="text-sm font-medium text-muted-foreground">{t[lang].pemasukan}</h2>
                   <p className="text-2xl font-bold text-green-600 mt-2">{formatCurrency(stats.totalIncome)}</p>
                 </CardContent>
               </Card>
-              <Card className="shadow-md rounded-2xl dark:bg-gray-800 border-0">
+              <Card className="shadow-md rounded-2xl bg-card border-0">
                 <CardContent className="p-4">
-                  <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t[lang].pengeluaran}</h2>
+                  <h2 className="text-sm font-medium text-muted-foreground">{t[lang].pengeluaran}</h2>
                   <p className="text-2xl font-bold text-red-600 mt-2">{formatCurrency(stats.totalExpense)}</p>
                 </CardContent>
               </Card>
-              <Card className="shadow-md rounded-2xl dark:bg-gray-800 border-0">
+              <Card className="shadow-md rounded-2xl bg-card border-0">
                 <CardContent className="p-4">
-                  <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400">{t[lang].jumlahTransaksi}</h2>
+                  <h2 className="text-sm font-medium text-muted-foreground">{t[lang].jumlahTransaksi}</h2>
                   <p className="text-2xl font-bold text-purple-600 mt-2">{stats.transactionCount}</p>
                 </CardContent>
               </Card>
             </section>
 
-            <section id="transactions">
+            <section id="transactions" className="mt-4">
               <h2 className="text-xl font-semibold mb-4">{t[lang].riwayatTransaksi}</h2>
               <div className="space-y-3">
                 {transactions.length === 0 ? (
-                  <Card className="rounded-xl shadow-sm dark:bg-gray-800 border-0">
+                  <Card className="rounded-xl shadow-sm bg-card border-0">
                     <CardContent className="p-8 text-center">
-                      <p className="text-gray-500 dark:text-gray-400">{t[lang].belumAdaTransaksi}</p>
+                      <p className="text-muted-foreground">{t[lang].belumAdaTransaksi}</p>
                     </CardContent>
                   </Card>
                 ) : (
                   transactions.slice(0, 10).map((tn) => (
-                    <Card key={tn.id} className="rounded-xl shadow-sm hover:shadow-md dark:bg-gray-800 transition border-0">
+                    <Card key={tn.id} className="rounded-xl shadow-sm hover:shadow-md bg-card transition border-0">
                       <CardContent className="flex justify-between items-center p-4">
                         <div>
                           <p className="font-semibold">{tn.description}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                          <p className="text-sm text-muted-foreground">
                             {tn.category} • {format(new Date(tn.date), 'dd MMM yyyy', { locale: idLocale })}
                           </p>
                         </div>
@@ -210,7 +211,7 @@ function WaltrackContent() {
 
         {/* Reports View */}
         {activeView === 'reports' && (
-          <section id="reports">
+          <section id="reports" className="space-y-6">
             <h2 className="text-2xl font-bold mb-6">{t[lang].laporan}</h2>
             <div className="grid gap-6 md:grid-cols-2">
               <Suspense
@@ -253,7 +254,7 @@ function WaltrackContent() {
         {activeView === 'profile' && (
           <section id="profile" className="max-w-2xl mx-auto">
             <h2 className="text-2xl font-bold mb-6">{t[lang].profil}</h2>
-            <Card className="shadow-md rounded-2xl dark:bg-gray-800 border-0">
+            <Card className="shadow-md rounded-2xl bg-card border-0">
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-center justify-center mb-6">
                   <div className="w-24 h-24 bg-teal-600 rounded-full flex items-center justify-center">
@@ -262,16 +263,16 @@ function WaltrackContent() {
                 </div>
                 <div className="text-center">
                   <h3 className="text-xl font-bold">User Waltrack</h3>
-                  <p className="text-gray-500 dark:text-gray-400">user@waltrack.app</p>
+                  <p className="text-muted-foreground">user@waltrack.app</p>
                 </div>
                 <div className="pt-4 space-y-3">
-                  <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="flex justify-between items-center p-3 bg-accent rounded-lg">
                     <span className="font-medium">{t[lang].ubahTema}</span>
                     <Button variant="ghost" onClick={toggleDarkMode} size="sm">
                       {darkMode ? <Sun size={18} /> : <Moon size={18} />}
                     </Button>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="flex justify-between items-center p-3 bg-accent rounded-lg">
                     <span className="font-medium">{lang === 'id' ? 'Bahasa' : 'Language'}</span>
                     <Button variant="ghost" onClick={toggleLang} size="sm" className="gap-2">
                       <Globe size={18} /> {t[lang].ubahBahasa}
@@ -287,21 +288,21 @@ function WaltrackContent() {
         <AnimatePresence>
           {showModal && (
             <motion.div
-              className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
+              className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowModal(false)}
             >
               <motion.div
-                className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md"
+                className="bg-card rounded-2xl p-6 w-full max-w-md"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <h3 className="text-lg font-semibold mb-4">{t[lang].scan}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t[lang].uploadStruk}</p>
+                <p className="text-sm text-muted-foreground mb-4">{t[lang].uploadStruk}</p>
                 <input
                   type="file"
                   accept="image/*"
@@ -310,7 +311,7 @@ function WaltrackContent() {
                   className="mb-4 w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 dark:file:bg-teal-900 dark:file:text-teal-100"
                 />
                 {uploadedFile && (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">📄 {uploadedFile.name}</p>
+                  <p className="text-sm text-muted-foreground mb-4">📄 {uploadedFile.name}</p>
                 )}
                 <Button
                   onClick={handleProcessReceipt}
@@ -330,19 +331,20 @@ function WaltrackContent() {
         {/* Floating Action Button (Mobile) */}
         <Button
           onClick={() => setShowModal(true)}
-          className="md:hidden fixed bottom-24 right-6 bg-teal-600 hover:bg-teal-700 rounded-full shadow-lg p-4 h-14 w-14 z-40"
+          className="md:hidden fixed right-5 sm:right-10 bottom-[calc(env(safe-area-inset-bottom)+4.5rem)] sm:bottom-[calc(env(safe-area-inset-bottom)+3.5rem)] bg-teal-600 hover:bg-teal-700 rounded-full shadow-lg p-4 h-14 w-14 z-50"
         >
           <Camera className="text-white" size={24} />
         </Button>
-        </main>
+        </div>
+      </main>
 
         {/* Bottom Navbar (Mobile Only) */}
-        <nav className="md:hidden fixed bottom-0 w-full bg-white dark:bg-gray-800 border-t dark:border-gray-700 flex justify-around py-2 shadow-lg z-50">
+        <nav className="md:hidden fixed bottom-0 w-full bg-background border-t border-border flex justify-around items-center h-16 pt-2 pb-[calc(env(safe-area-inset-bottom)+0.25rem)] shadow-lg z-40">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setActiveView('home')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'home' ? 'text-teal-600' : 'text-gray-600 dark:text-gray-300'}`}
+          className={`flex flex-col items-center gap-1 ${activeView === 'home' ? 'text-teal-600' : 'text-muted-foreground'}`}
         >
           <Home size={20} />
           <span className="text-xs">Home</span>
@@ -351,7 +353,7 @@ function WaltrackContent() {
           variant="ghost"
           size="icon"
           onClick={() => setActiveView('reports')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'reports' ? 'text-teal-600' : 'text-gray-600 dark:text-gray-300'}`}
+          className={`flex flex-col items-center gap-1 ${activeView === 'reports' ? 'text-teal-600' : 'text-muted-foreground'}`}
         >
           <BarChart2 size={20} />
           <span className="text-xs">{t[lang].laporan}</span>
@@ -370,7 +372,7 @@ function WaltrackContent() {
           variant="ghost"
           size="icon"
           onClick={() => setShowModal(true)}
-          className="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-300"
+          className="flex flex-col items-center gap-1 text-muted-foreground"
         >
           <Upload size={20} />
           <span className="text-xs">{t[lang].scan}</span>
@@ -379,7 +381,7 @@ function WaltrackContent() {
           variant="ghost"
           size="icon"
           onClick={() => setActiveView('profile')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'profile' ? 'text-teal-600' : 'text-gray-600 dark:text-gray-300'}`}
+          className={`flex flex-col items-center gap-1 ${activeView === 'profile' ? 'text-teal-600' : 'text-muted-foreground'}`}
         >
           <User size={20} />
           <span className="text-xs">{t[lang].profil}</span>
