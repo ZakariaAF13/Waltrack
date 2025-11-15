@@ -35,13 +35,13 @@ export const Sidebar = ({ isOpen, onToggle, activeView, onNavigate, lang }: Side
       {/* Sidebar - Hidden on mobile, visible on desktop */}
       <aside
         className={cn(
-          'hidden lg:block fixed top-0 left-0 h-full bg-white dark:bg-gray-800 border-r dark:border-gray-700 z-50 transition-all duration-300 ease-in-out',
+          'hidden lg:block fixed top-0 left-0 h-full bg-background border-r border-border z-50 transition-all duration-300 ease-in-out',
           isOpen ? 'w-64' : 'w-20'
         )}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
+          <div className="flex items-center justify-between p-4 border-b border-border">
             {isOpen && (
               <div className="flex items-center gap-2">
                 <Wallet className="h-6 w-6 text-teal-600" />
@@ -84,8 +84,8 @@ export const Sidebar = ({ isOpen, onToggle, activeView, onNavigate, lang }: Side
 
           {/* Footer */}
           {isOpen && (
-            <div className="p-4 border-t dark:border-gray-700">
-              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+            <div className="p-4 border-t border-border">
+              <p className="text-xs text-muted-foreground text-center">
                 © 2025 Waltrack
               </p>
             </div>
