@@ -1,3 +1,11 @@
 #root {
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Ensure mobile centering */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
 }
