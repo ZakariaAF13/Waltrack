@@ -5,8 +5,8 @@ import { cn } from '@/lib/utils';
 interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
-  activeView: 'home' | 'reports' | 'profile';
-  onNavigate: (view: 'home' | 'reports' | 'profile') => void;
+  activeView: 'home' | 'reports' | 'profile' | 'history';
+  onNavigate: (view: 'home' | 'reports' | 'profile' | 'history') => void;
   lang: 'id' | 'en';
 }
 
