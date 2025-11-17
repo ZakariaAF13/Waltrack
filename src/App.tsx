@@ -259,417 +259,377 @@ function WaltrackContent() {
     }).format(amount);
   };
 
+  const navItems: { key: 'home' | 'reports' | 'history' | 'profile'; label: string; icon: typeof Home }[] = [
+    { key: 'home', label: lang === 'id' ? 'Dasbor' : 'Dashboard', icon: Home },
+    { key: 'reports', label: lang === 'id' ? 'Laporan' : 'Reports', icon: BarChart2 },
+    { key: 'history', label: lang === 'id' ? 'Riwayat' : 'History', icon: History },
+    { key: 'profile', label: lang === 'id' ? 'Profil' : 'Profile', icon: User },
+  ];
+
+  const currentViewLabel = navItems.find((item) => item.key === activeView)?.label ?? '';
+
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors">
-      {/* Responsive Layout: Centered container with sidebar (desktop only) + content */}
-      <div className="flex w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
-        {/* Sidebar */}
-        <aside className="hidden lg:block w-64 h-screen sticky top-0 flex-shrink-0 border-r border-border">
-          <div className="flex flex-col h-full py-6">
-            {/* Header */}
-            <div className="flex items-center gap-2 px-4 mb-8">
-              <Wallet className="h-6 w-6 text-teal-600" />
-              <h1 className="text-xl font-bold text-teal-600">Waltrack</h1>
-            </div>
-
-            {/* Menu Items */}
-            <nav className="flex-1 px-4 space-y-2">
-              <Button
-                variant={activeView === 'home' ? 'default' : 'ghost'}
-                className={cn(
-                  'w-full justify-start gap-3',
-                  activeView === 'home' && 'bg-teal-600 hover:bg-teal-700 text-white'
-                )}
-                onClick={() => setActiveView('home')}
-              >
-                <Home size={20} />
-                <span>Dashboard</span>
-              </Button>
-              <Button
-                variant={activeView === 'reports' ? 'default' : 'ghost'}
-                className={cn(
-                  'w-full justify-start gap-3',
-                  activeView === 'reports' && 'bg-teal-600 hover:bg-teal-700 text-white'
-                )}
-                onClick={() => setActiveView('reports')}
-              >
-                <BarChart2 size={20} />
-                <span>{lang === 'id' ? 'Laporan' : 'Reports'}</span>
-              </Button>
-              <Button
-                variant={activeView === 'history' ? 'default' : 'ghost'}
-                className={cn(
-                  'w-full justify-start gap-3',
-                  activeView === 'history' && 'bg-teal-600 hover:bg-teal-700 text-white'
-                )}
-                onClick={() => setActiveView('history')}
-              >
-                <History size={20} />
-                <span>{lang === 'id' ? 'Riwayat' : 'History'}</span>
-              </Button>
-              <Button
-                variant={activeView === 'profile' ? 'default' : 'ghost'}
-                className={cn(
-                  'w-full justify-start gap-3',
-                  activeView === 'profile' && 'bg-teal-600 hover:bg-teal-700 text-white'
-                )}
-                onClick={() => setActiveView('profile')}
-              >
-                <User size={20} />
-                <span>{lang === 'id' ? 'Profil' : 'Profile'}</span>
-              </Button>
-            </nav>
-
-            {/* Footer */}
-            <div className="px-4 pt-4 border-t border-border">
-              <p className="text-xs text-muted-foreground text-center">
-                © 2025 Waltrack
-              </p>
-            </div>
-          </div>
-        </aside>
-
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-        {/* Top Bar (Mobile & Desktop) */}
-        <header className="bg-background border-b border-border pt-[env(safe-area-inset-top)] py-3 sticky top-0 z-30">
-          <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {/* Brand on mobile */}
-              <div className="flex items-center gap-2 md:hidden">
-                <Wallet className="h-5 w-5 text-teal-600" />
-                <span className="font-bold text-teal-600">Waltrack</span>
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6">
+        <header className="rounded-3xl border border-border bg-card/60 backdrop-blur-sm px-5 sm:px-8 py-5 shadow-lg">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 rounded-2xl bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
+                <Wallet className="h-7 w-7 text-teal-600 dark:text-teal-400" />
               </div>
-              {/* Section title on md+ */}
-              <h2 className="hidden md:block text-lg sm:text-xl lg:text-2xl font-semibold">
-                {activeView === 'home' && t[lang].saldo}
-                {activeView === 'reports' && t[lang].laporan}
-                {activeView === 'history' && (lang === 'id' ? 'Riwayat Transaksi' : 'Transaction History')}
-                {activeView === 'profile' && t[lang].profil}
-              </h2>
+              <div>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                  {currentViewLabel}
+                </p>
+                <h1 className="text-2xl font-bold text-teal-600">Waltrack</h1>
+                <p className="text-sm text-muted-foreground">{t[lang].desc}</p>
+              </div>
             </div>
-
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" onClick={toggleLang}>
-                <Globe size={18} />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={toggleDarkMode}>
-                {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-              </Button>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="icon" onClick={toggleLang}>
+                  <Globe size={18} />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={toggleDarkMode}>
+                  {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+                </Button>
+              </div>
               <Button
                 onClick={() => setShowAddDialog(true)}
-                className="hidden md:flex bg-teal-600 hover:bg-teal-700 gap-2"
+                className="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 gap-2"
                 size="sm"
               >
                 <PlusCircle size={16} />
-                <span className="hidden lg:inline">{t[lang].tambahTransaksi}</span>
+                <span>{t[lang].tambahTransaksi}</span>
               </Button>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 py-4 sm:py-6 md:py-8 pb-[calc(env(safe-area-inset-bottom)+6rem)] md:pb-12 overflow-auto">
-          <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 space-y-8">
-        {/* Home View */}
-        {activeView === 'home' && (
-          <>
-            <section id="dashboard" className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card className="shadow-md rounded-2xl bg-card border-0">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
-                      <Wallet size={20} className="text-teal-600 dark:text-teal-400" />
-                    </div>
-                    <h2 className="text-sm font-medium text-muted-foreground">{t[lang].saldo}</h2>
-                  </div>
-                  <p className="text-2xl font-bold text-teal-600 dark:text-teal-400 mt-2">{formatCurrency(stats.balance)}</p>
-                </CardContent>
-              </Card>
-              <Card className="shadow-md rounded-2xl bg-card border-0">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center">
-                      <ArrowDownCircle size={20} className="text-green-600 dark:text-green-400" />
-                    </div>
-                    <h2 className="text-sm font-medium text-muted-foreground">{t[lang].pemasukan}</h2>
-                  </div>
-                  <p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-2">{formatCurrency(stats.totalIncome)}</p>
-                </CardContent>
-              </Card>
-              <Card className="shadow-md rounded-2xl bg-card border-0">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
-                      <ArrowUpCircle size={20} className="text-red-600 dark:text-red-400" />
-                    </div>
-                    <h2 className="text-sm font-medium text-muted-foreground">{t[lang].pengeluaran}</h2>
-                  </div>
-                  <p className="text-2xl font-bold text-red-600 dark:text-red-400 mt-2">{formatCurrency(stats.totalExpense)}</p>
-                </CardContent>
-              </Card>
-              <Card className="shadow-md rounded-2xl bg-card border-0">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
-                      <ListOrdered size={20} className="text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <h2 className="text-sm font-medium text-muted-foreground">{t[lang].jumlahTransaksi}</h2>
-                  </div>
-                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-2">{stats.transactionCount}</p>
-                </CardContent>
-              </Card>
-            </section>
-
-            <section id="transactions" className="mt-4">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">{t[lang].riwayatTransaksi}</h2>
-                <Button variant="ghost" size="sm" className="text-teal-600 px-2" onClick={goToHistory}>
-                  {lang === 'id' ? 'lihat semua' : 'view all'}
+        <section className="rounded-3xl border border-border bg-card/40 shadow-lg p-4 sm:p-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Button
+                  key={item.key}
+                  variant="ghost"
+                  className={cn(
+                    'w-full h-20 rounded-2xl border border-border bg-background/70 shadow-sm flex flex-col items-center justify-center gap-2 text-base font-semibold',
+                    activeView === item.key && 'bg-teal-600 text-white border-teal-600 hover:bg-teal-700'
+                  )}
+                  onClick={() => setActiveView(item.key)}
+                >
+                  <Icon size={22} />
+                  <span>{item.label}</span>
                 </Button>
-              </div>
-              <div className="space-y-3">
-                {transactions.length === 0 ? (
-                  <Card className="rounded-xl shadow-sm bg-card border-0">
-                    <CardContent className="p-8 text-center">
-                      <p className="text-muted-foreground">{t[lang].belumAdaTransaksi}</p>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-border bg-card/30 shadow-xl p-4 sm:p-6 lg:p-8 space-y-8">
+          {/* Home View */}
+          {activeView === 'home' && (
+            <>
+              <section id="dashboard" className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  <Card className="shadow-md rounded-2xl bg-card border-0">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
+                          <Wallet size={20} className="text-teal-600 dark:text-teal-400" />
+                        </div>
+                        <h2 className="text-sm font-medium text-muted-foreground">{t[lang].saldo}</h2>
+                      </div>
+                      <p className="text-2xl font-bold text-teal-600 dark:text-teal-400 mt-2">{formatCurrency(stats.balance)}</p>
                     </CardContent>
                   </Card>
-                ) : (
-                  transactions.slice(0, 10).map((tn) => (
-                    <Card key={tn.id} className="rounded-xl shadow-sm hover:shadow-md bg-card transition border-0">
-                      <CardContent className="flex justify-between items-center p-4">
-                        <div>
-                          <p className="font-semibold">{tn.description}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {tn.category} • {format(new Date(tn.date), 'dd MMM yyyy', { locale: idLocale })}
-                          </p>
+                  <Card className="shadow-md rounded-2xl bg-card border-0">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center">
+                          <ArrowDownCircle size={20} className="text-green-600 dark:text-green-400" />
                         </div>
-                        <p className={`font-bold ${tn.type === 'expense' ? 'text-red-500' : 'text-green-600'}`}>
-                          {tn.type === 'expense' ? '-' : '+'}
-                          {formatCurrency(tn.amount)}
-                        </p>
+                        <h2 className="text-sm font-medium text-muted-foreground">{t[lang].pemasukan}</h2>
+                      </div>
+                      <p className="text-2xl font-bold text-green-600 dark:text-green-400 mt-2">{formatCurrency(stats.totalIncome)}</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="shadow-md rounded-2xl bg-card border-0">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
+                          <ArrowUpCircle size={20} className="text-red-600 dark:text-red-400" />
+                        </div>
+                        <h2 className="text-sm font-medium text-muted-foreground">{t[lang].pengeluaran}</h2>
+                      </div>
+                      <p className="text-2xl font-bold text-red-600 dark:text-red-400 mt-2">{formatCurrency(stats.totalExpense)}</p>
+                    </CardContent>
+                  </Card>
+                  <Card className="shadow-md rounded-2xl bg-card border-0">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center">
+                          <ListOrdered size={20} className="text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <h2 className="text-sm font-medium text-muted-foreground">{t[lang].jumlahTransaksi}</h2>
+                      </div>
+                      <p className="text-2xl font-bold text-purple-600 dark:text-purple-400 mt-2">{stats.transactionCount}</p>
+                    </CardContent>
+                  </Card>
+                </section>
+
+                <section id="transactions" className="mt-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold">{t[lang].riwayatTransaksi}</h2>
+                    <Button variant="ghost" size="sm" className="text-teal-600 px-2" onClick={goToHistory}>
+                      {lang === 'id' ? 'lihat semua' : 'view all'}
+                    </Button>
+                  </div>
+                  <div className="space-y-3">
+                    {transactions.length === 0 ? (
+                      <Card className="rounded-xl shadow-sm bg-card border-0">
+                        <CardContent className="p-8 text-center">
+                          <p className="text-muted-foreground">{t[lang].belumAdaTransaksi}</p>
+                        </CardContent>
+                      </Card>
+                    ) : (
+                      transactions.slice(0, 10).map((tn) => (
+                        <Card key={tn.id} className="rounded-xl shadow-sm hover:shadow-md bg-card transition border-0">
+                          <CardContent className="flex justify-between items-center p-4">
+                            <div>
+                              <p className="font-semibold">{tn.description}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {tn.category} • {format(new Date(tn.date), 'dd MMM yyyy', { locale: idLocale })}
+                              </p>
+                            </div>
+                            <p className={`font-bold ${tn.type === 'expense' ? 'text-red-500' : 'text-green-600'}`}>
+                              {tn.type === 'expense' ? '-' : '+'}
+                              {formatCurrency(tn.amount)}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      ))
+                    )}
+                  </div>
+                </section>
+              </>
+            )}
+
+            {/* Reports View */}
+            {activeView === 'reports' && (
+              <section id="reports" className="space-y-6">
+                <h2 className="text-2xl font-bold mb-6">{t[lang].laporan}</h2>
+                <div className="grid gap-6 md:grid-cols-2">
+                  <Suspense
+                    fallback={
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>
+                            <Skeleton className="h-6 w-48" />
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <Skeleton className="h-[300px] w-full" />
+                        </CardContent>
+                      </Card>
+                    }
+                  >
+                    <LazyIncomeExpenseChart />
+                  </Suspense>
+                  <Suspense
+                    fallback={
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>
+                            <Skeleton className="h-6 w-48" />
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <Skeleton className="h-[300px] w-full" />
+                        </CardContent>
+                      </Card>
+                    }
+                  >
+                    <LazyExpenseChart />
+                  </Suspense>
+                </div>
+              </section>
+            )}
+
+            {/* History View */}
+            {activeView === 'history' && (
+              <section id="history" className="space-y-6">
+                <h2 className="text-2xl font-bold">{lang === 'id' ? 'Riwayat Transaksi' : 'Transaction History'}</h2>
+                
+                {/* Controls */}
+                <div className="space-y-3">
+                  {/* Search */}
+                  <div className="relative w-full">
+                    <input
+                      className="w-full h-12 rounded-full border border-input bg-transparent pl-11 pr-4 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      placeholder={t[lang].cariTransaksi}
+                      value={historyQuery}
+                      onChange={(e) => setHistoryQuery(e.target.value)}
+                    />
+                    <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  </div>
+
+                  {/* Filters + Preset/Export (stack on mobile, split on desktop) */}
+                  <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div className="flex items-center gap-3 overflow-x-auto">
+                      <Button variant={historyFilter === 'all' ? 'default' : 'outline'} size="default" onClick={() => setHistoryFilter('all')}>
+                        {t[lang].semua}
+                      </Button>
+                      <Button variant={historyFilter === 'income' ? 'default' : 'outline'} size="default" onClick={() => setHistoryFilter('income')}>
+                        {t[lang].pemasukanShort}
+                      </Button>
+                      <Button variant={historyFilter === 'expense' ? 'default' : 'outline'} size="default" onClick={() => setHistoryFilter('expense')}>
+                        {t[lang].pengeluaranShort}
+                      </Button>
+                    </div>
+
+                    <div className="flex items-center gap-3 md:ml-auto">
+                      <select
+                        className="h-12 rounded-md border border-input bg-transparent px-3 text-base"
+                        value={datePreset}
+                        onChange={(e) => setDatePreset(e.target.value as any)}
+                      >
+                        <option value="all">{t[lang].semua}</option>
+                        <option value="today">{t[lang].hariIni}</option>
+                        <option value="week">{t[lang].mingguIni}</option>
+                        <option value="month">{t[lang].bulanIni}</option>
+                        <option value="custom">{t[lang].rentangTanggal}</option>
+                      </select>
+                      <Button variant="outline" size="default" className="gap-2 whitespace-nowrap" onClick={exportCSV}>
+                        <Download size={18} /> {t[lang].eksporCsv}
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Custom Date Range */}
+                  {datePreset === 'custom' && (
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                      <input type="date" className="h-12 rounded-md border border-input bg-transparent px-3 text-base flex-1" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                      <span className="text-center sm:px-2 text-lg">—</span>
+                      <input type="date" className="h-12 rounded-md border border-input bg-transparent px-3 text-base flex-1" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                    </div>
+                  )}
+                </div>
+
+                {/* List */}
+                <div className="space-y-3">
+                  {filteredHistory.length === 0 ? (
+                    <Card className="rounded-xl shadow-sm bg-card border-0">
+                      <CardContent className="p-8 text-center">
+                        <p className="text-muted-foreground">{t[lang].belumAdaTransaksi}</p>
                       </CardContent>
                     </Card>
-                  ))
-                )}
-              </div>
-            </section>
-          </>
-        )}
-
-        {/* Reports View */}
-        {activeView === 'reports' && (
-          <section id="reports" className="space-y-6">
-            <h2 className="text-2xl font-bold mb-6">{t[lang].laporan}</h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              <Suspense
-                fallback={
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>
-                        <Skeleton className="h-6 w-48" />
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <Skeleton className="h-[300px] w-full" />
-                    </CardContent>
-                  </Card>
-                }
-              >
-                <LazyIncomeExpenseChart />
-              </Suspense>
-              <Suspense
-                fallback={
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>
-                        <Skeleton className="h-6 w-48" />
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <Skeleton className="h-[300px] w-full" />
-                    </CardContent>
-                  </Card>
-                }
-              >
-                <LazyExpenseChart />
-              </Suspense>
-            </div>
-          </section>
-        )}
-
-        {/* History View */}
-        {activeView === 'history' && (
-          <section id="history" className="space-y-6">
-            <h2 className="text-2xl font-bold">{lang === 'id' ? 'Riwayat Transaksi' : 'Transaction History'}</h2>
-            
-            {/* Controls */}
-            <div className="space-y-3">
-              {/* Search */}
-              <div className="relative w-full">
-                <input
-                  className="w-full h-12 rounded-full border border-input bg-transparent pl-11 pr-4 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                  placeholder={t[lang].cariTransaksi}
-                  value={historyQuery}
-                  onChange={(e) => setHistoryQuery(e.target.value)}
-                />
-                <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              </div>
-
-              {/* Filters + Preset/Export (stack on mobile, split on desktop) */}
-              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div className="flex items-center gap-3 overflow-x-auto">
-                  <Button variant={historyFilter === 'all' ? 'default' : 'outline'} size="default" onClick={() => setHistoryFilter('all')}>
-                    {t[lang].semua}
-                  </Button>
-                  <Button variant={historyFilter === 'income' ? 'default' : 'outline'} size="default" onClick={() => setHistoryFilter('income')}>
-                    {t[lang].pemasukanShort}
-                  </Button>
-                  <Button variant={historyFilter === 'expense' ? 'default' : 'outline'} size="default" onClick={() => setHistoryFilter('expense')}>
-                    {t[lang].pengeluaranShort}
-                  </Button>
+                  ) : (
+                    <>
+                      {(['today','week','month','earlier'] as const).map((key) => (
+                        grouped[key].length > 0 && (
+                          <div key={key} className="space-y-2">
+                            <h3 className="text-sm font-semibold text-muted-foreground">
+                              {key === 'today' && t[lang].hariIni}
+                              {key === 'week' && t[lang].mingguIni}
+                              {key === 'month' && t[lang].bulanIni}
+                              {key === 'earlier' && t[lang].sebelumnya}
+                            </h3>
+                            {grouped[key].map((tn) => (
+                              <Card key={tn.id} className="rounded-xl shadow-sm hover:shadow-md bg-card transition border-0">
+                                <CardContent className="flex justify-between items-center p-5">
+                                  <div className="flex items-center gap-4">
+                                    <div className={`h-12 w-12 rounded-full flex items-center justify-center ${tn.type === 'expense' ? 'bg-red-100 dark:bg-red-900/40' : 'bg-green-100 dark:bg-green-900/40'}`}>
+                                      {tn.type === 'expense' ? (
+                                        <ArrowUpCircle size={22} className="text-red-600 dark:text-red-400" />
+                                      ) : (
+                                        <ArrowDownCircle size={22} className="text-green-600 dark:text-green-400" />
+                                      )}
+                                    </div>
+                                    <div>
+                                      <p className="font-semibold text-base">{tn.description}</p>
+                                      <p className="text-sm text-muted-foreground">
+                                        {format(new Date(tn.date), 'dd MMM yyyy', { locale: idLocale })}
+                                      </p>
+                                      <div className="mt-1">
+                                        <Badge variant="secondary" className="text-sm">{tn.category}</Badge>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <p className={`${tn.type === 'expense' ? 'text-red-500' : 'text-green-600'} font-bold text-lg`}>
+                                    {tn.type === 'expense' ? '-' : '+'}
+                                    {formatCurrency(tn.amount)}
+                                  </p>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
+                        )
+                      ))}
+                    </>
+                  )}
                 </div>
+              </section>
+            )}
 
-                <div className="flex items-center gap-3 md:ml-auto">
-                  <select
-                    className="h-12 rounded-md border border-input bg-transparent px-3 text-base"
-                    value={datePreset}
-                    onChange={(e) => setDatePreset(e.target.value as any)}
-                  >
-                    <option value="all">{t[lang].semua}</option>
-                    <option value="today">{t[lang].hariIni}</option>
-                    <option value="week">{t[lang].mingguIni}</option>
-                    <option value="month">{t[lang].bulanIni}</option>
-                    <option value="custom">{t[lang].rentangTanggal}</option>
-                  </select>
-                  <Button variant="outline" size="default" className="gap-2 whitespace-nowrap" onClick={exportCSV}>
-                    <Download size={18} /> {t[lang].eksporCsv}
-                  </Button>
-                </div>
-              </div>
-              
-              {/* Custom Date Range */}
-              {datePreset === 'custom' && (
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                  <input type="date" className="h-12 rounded-md border border-input bg-transparent px-3 text-base flex-1" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                  <span className="text-center sm:px-2 text-lg">—</span>
-                  <input type="date" className="h-12 rounded-md border border-input bg-transparent px-3 text-base flex-1" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-                </div>
-              )}
-            </div>
-
-            {/* List */}
-            <div className="space-y-3">
-              {filteredHistory.length === 0 ? (
-                <Card className="rounded-xl shadow-sm bg-card border-0">
-                  <CardContent className="p-8 text-center">
-                    <p className="text-muted-foreground">{t[lang].belumAdaTransaksi}</p>
+            {/* Profile View */}
+            {activeView === 'profile' && (
+              <section id="profile" className="space-y-6 w-full max-w-4xl mx-auto">
+                {/* User Card */}
+                <Card className="shadow-lg rounded-2xl bg-card border-0 cursor-pointer hover:shadow-xl transition-shadow" onClick={() => setShowProfileEdit(true)}>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center">
+                          <User size={32} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg">{userName}</h3>
+                          <p className="text-base text-muted-foreground">{userEmail}</p>
+                        </div>
+                      </div>
+                      <ChevronRight size={24} className="text-muted-foreground" />
+                    </div>
                   </CardContent>
                 </Card>
-              ) : (
-                <>
-                  {(['today','week','month','earlier'] as const).map((key) => (
-                    grouped[key].length > 0 && (
-                      <div key={key} className="space-y-2">
-                        <h3 className="text-sm font-semibold text-muted-foreground">
-                          {key === 'today' && t[lang].hariIni}
-                          {key === 'week' && t[lang].mingguIni}
-                          {key === 'month' && t[lang].bulanIni}
-                          {key === 'earlier' && t[lang].sebelumnya}
-                        </h3>
-                        {grouped[key].map((tn) => (
-                          <Card key={tn.id} className="rounded-xl shadow-sm hover:shadow-md bg-card transition border-0">
-                            <CardContent className="flex justify-between items-center p-5">
-                              <div className="flex items-center gap-4">
-                                <div className={`h-12 w-12 rounded-full flex items-center justify-center ${tn.type === 'expense' ? 'bg-red-100 dark:bg-red-900/40' : 'bg-green-100 dark:bg-green-900/40'}`}>
-                                  {tn.type === 'expense' ? (
-                                    <ArrowUpCircle size={22} className="text-red-600 dark:text-red-400" />
-                                  ) : (
-                                    <ArrowDownCircle size={22} className="text-green-600 dark:text-green-400" />
-                                  )}
-                                </div>
-                                <div>
-                                  <p className="font-semibold text-base">{tn.description}</p>
-                                  <p className="text-sm text-muted-foreground">
-                                    {format(new Date(tn.date), 'dd MMM yyyy', { locale: idLocale })}
-                                  </p>
-                                  <div className="mt-1">
-                                    <Badge variant="secondary" className="text-sm">{tn.category}</Badge>
-                                  </div>
-                                </div>
-                              </div>
-                              <p className={`${tn.type === 'expense' ? 'text-red-500' : 'text-green-600'} font-bold text-lg`}>
-                                {tn.type === 'expense' ? '-' : '+'}
-                                {formatCurrency(tn.amount)}
-                              </p>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    )
-                  ))}
-                </>
-              )}
-            </div>
-          </section>
-        )}
 
-        {/* Profile View */}
-        {activeView === 'profile' && (
-          <section id="profile" className="space-y-6 w-full max-w-4xl mx-auto">
-            {/* User Card */}
-            <Card className="shadow-lg rounded-2xl bg-card border-0 cursor-pointer hover:shadow-xl transition-shadow" onClick={() => setShowProfileEdit(true)}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center">
-                      <User size={32} className="text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg">{userName}</h3>
-                      <p className="text-base text-muted-foreground">{userEmail}</p>
-                    </div>
-                  </div>
-                  <ChevronRight size={24} className="text-muted-foreground" />
+                {/* Menu List - single wide list */}
+                <div className="bg-card rounded-2xl shadow-md overflow-hidden divide-y divide-border">
+                  <button 
+                    onClick={() => setShowExpenseAnalysis(true)}
+                    className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
+                  >
+                    <TrendingDown size={24} className="text-muted-foreground" />
+                    <span className="font-medium text-base">{lang === 'id' ? 'Analisa pengeluaran' : 'Expense Analysis'}</span>
+                  </button>
+                  <button 
+                    onClick={() => setShowBudgetPlan(true)}
+                    className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
+                  >
+                    <Calendar size={24} className="text-muted-foreground" />
+                    <span className="font-medium text-base">{lang === 'id' ? 'rencanakan' : 'Planning'}</span>
+                  </button>
+                  <button 
+                    onClick={() => setShowChangePin(true)}
+                    className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
+                  >
+                    <Lock size={24} className="text-muted-foreground" />
+                    <span className="font-medium text-base">{lang === 'id' ? 'ubah pin' : 'Change PIN'}</span>
+                  </button>
+                  <button 
+                    onClick={() => setShowLogoutConfirm(true)}
+                    className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
+                  >
+                    <LogOut size={24} className="text-red-600" />
+                    <span className="font-medium text-base text-red-600">{lang === 'id' ? 'akhiri sesi' : 'Logout'}</span>
+                  </button>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Menu List - single wide list */}
-            <div className="bg-card rounded-2xl shadow-md overflow-hidden divide-y divide-border">
-              <button 
-                onClick={() => setShowExpenseAnalysis(true)}
-                className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
-              >
-                <TrendingDown size={24} className="text-muted-foreground" />
-                <span className="font-medium text-base">{lang === 'id' ? 'Analisa pengeluaran' : 'Expense Analysis'}</span>
-              </button>
-              <button 
-                onClick={() => setShowBudgetPlan(true)}
-                className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
-              >
-                <Calendar size={24} className="text-muted-foreground" />
-                <span className="font-medium text-base">{lang === 'id' ? 'rencanakan' : 'Planning'}</span>
-              </button>
-              <button 
-                onClick={() => setShowChangePin(true)}
-                className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
-              >
-                <Lock size={24} className="text-muted-foreground" />
-                <span className="font-medium text-base">{lang === 'id' ? 'ubah pin' : 'Change PIN'}</span>
-              </button>
-              <button 
-                onClick={() => setShowLogoutConfirm(true)}
-                className="w-full flex items-center gap-4 p-5 hover:bg-accent transition-colors"
-              >
-                <LogOut size={24} className="text-red-600" />
-                <span className="font-medium text-base text-red-600">{lang === 'id' ? 'akhiri sesi' : 'Logout'}</span>
-              </button>
-            </div>
+              </section>
+            )}
           </section>
-        )}
+        </div>
 
-        {/* Modal Upload/Scan */}
         <AnimatePresence>
           {showModal && (
             <motion.div
@@ -713,65 +673,12 @@ function WaltrackContent() {
           )}
         </AnimatePresence>
 
-        {/* Floating Action Button (Mobile) */}
         <Button
           onClick={() => setShowModal(true)}
-          className="md:hidden fixed right-5 sm:right-10 bottom-[calc(env(safe-area-inset-bottom)+4.5rem)] sm:bottom-[calc(env(safe-area-inset-bottom)+3.5rem)] bg-teal-600 hover:bg-teal-700 rounded-full shadow-lg p-4 h-14 w-14 z-50"
+          className="md:hidden fixed right-5 sm:right-10 bottom-[calc(env(safe-area-inset-bottom)+2.5rem)] bg-teal-600 hover:bg-teal-700 rounded-full shadow-lg p-4 h-14 w-14 z-50"
         >
           <Camera className="text-white" size={24} />
         </Button>
-        </div>
-      </main>
-
-        {/* Bottom Navbar (Mobile Only) */}
-        <nav className="md:hidden fixed bottom-0 w-full bg-background border-t border-border flex justify-around items-center h-16 pt-2 pb-[calc(env(safe-area-inset-bottom)+0.25rem)] shadow-lg z-40">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setActiveView('home')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'home' ? 'text-teal-600' : 'text-muted-foreground'}`}
-        >
-          <Home size={20} />
-          <span className="text-xs">Home</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setActiveView('reports')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'reports' ? 'text-teal-600' : 'text-muted-foreground'}`}
-        >
-          <BarChart2 size={20} />
-          <span className="text-xs">{t[lang].laporan}</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setShowAddDialog(true)}
-          className="flex flex-col items-center text-teal-600 -mt-2"
-        >
-          <div className="bg-teal-600 rounded-full p-3">
-            <PlusCircle size={28} className="text-white" />
-          </div>
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={goToHistory}
-          className={`flex flex-col items-center gap-1 ${activeView === 'history' ? 'text-teal-600' : 'text-muted-foreground'}`}
-        >
-          <History size={20} />
-          <span className="text-xs">History</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setActiveView('profile')}
-          className={`flex flex-col items-center gap-1 ${activeView === 'profile' ? 'text-teal-600' : 'text-muted-foreground'}`}
-        >
-          <User size={20} />
-          <span className="text-xs">{t[lang].profil}</span>
-        </Button>
-        </nav>
 
         <AddTransactionDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
         <ProfileEditDialog 
@@ -815,9 +722,7 @@ function WaltrackContent() {
           </AlertDialogContent>
         </AlertDialog>
         <Toaster />
-        </div>
       </div>
-    </div>
   );
 }
 
