@@ -269,9 +269,66 @@ function WaltrackContent() {
   const currentViewLabel = navItems.find((item) => item.key === activeView)?.label ?? '';
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors">
-      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6">
-        <header className="rounded-3xl border border-border bg-card/60 backdrop-blur-sm px-5 sm:px-8 py-5 shadow-lg">
+    <div className="min-h-screen bg-background text-foreground transition-colors lg:flex">
+      {/* Sidebar — desktop only (lg >= 1024px) */}
+      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:shrink-0 lg:sticky lg:top-0 lg:h-screen border-r border-border bg-card/60 backdrop-blur-sm">
+        <div className="flex items-center gap-3 px-6 py-6">
+          <div className="h-11 w-11 rounded-2xl bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
+            <Wallet className="h-6 w-6 text-teal-600 dark:text-teal-400" />
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-teal-600">Waltrack</h1>
+            <p className="text-xs text-muted-foreground">{currentViewLabel}</p>
+          </div>
+        </div>
+
+        <nav className="flex-1 px-3 space-y-1">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.key}
+                onClick={() => setActiveView(item.key)}
+                className={cn(
+                  'w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-accent',
+                  activeView === item.key
+                    ? 'bg-teal-600 text-white hover:bg-teal-700'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                <Icon size={18} />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        <div className="px-3 pb-4 space-y-3">
+          <Button
+            onClick={() => setShowModal(true)}
+            variant="outline"
+            className="w-full gap-2 border-teal-600/40 text-teal-600 hover:bg-teal-50 hover:text-teal-700 dark:hover:bg-teal-900/30"
+          >
+            <Camera size={16} />
+            <span>{t[lang].scan}</span>
+          </Button>
+          <div className="flex items-center justify-between rounded-xl border border-border bg-background/70 px-1 py-1">
+            <span className="pl-2 text-xs text-muted-foreground">{t[lang].ubahTema}</span>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon" onClick={toggleLang} title="Bahasa / Language">
+                <Globe size={16} />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={toggleDarkMode}>
+                {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div className="flex-1 min-w-0">
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6">
+          <header className="rounded-3xl border border-border bg-card/60 backdrop-blur-sm px-5 sm:px-8 py-5 shadow-lg lg:hidden">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-4">
               <div className="h-14 w-14 rounded-2xl bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
@@ -306,7 +363,7 @@ function WaltrackContent() {
           </div>
         </header>
 
-        <section className="rounded-3xl border border-border bg-card/40 shadow-lg p-4 sm:p-6">
+        <section className="rounded-3xl border border-border bg-card/40 shadow-lg p-4 sm:p-6 lg:hidden">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -328,7 +385,25 @@ function WaltrackContent() {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-border bg-card/30 shadow-xl p-4 sm:p-6 lg:p-8 space-y-8">
+        {/* Topbar — desktop only */}
+        <div className="hidden lg:flex items-center justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground">
+              {currentViewLabel}
+            </p>
+            <h2 className="text-2xl font-bold">Waltrack</h2>
+          </div>
+          <Button
+            onClick={() => setShowAddDialog(true)}
+            className="bg-teal-600 hover:bg-teal-700 gap-2"
+            size="sm"
+          >
+            <PlusCircle size={16} />
+            <span>{t[lang].tambahTransaksi}</span>
+          </Button>
+        </div>
+
+        <section className="rounded-3xl border border-border bg-card/30 shadow-xl p-4 sm:p-6 lg:p-8 space-y-8 lg:border-0 lg:bg-transparent lg:shadow-none lg:p-0">
           {/* Home View */}
           {activeView === 'home' && (
             <>
@@ -722,6 +797,7 @@ function WaltrackContent() {
           </AlertDialogContent>
         </AlertDialog>
         <Toaster />
+        </div>
       </div>
   );
 }

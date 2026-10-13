@@ -34,6 +34,17 @@ body {
   min-height: 100vh;
 }
 
+/* Desktop (lg >= 1024px): full-width layout, no flex centering from the Vite template */
+@media (min-width: 1024px) {
+  body {
+    display: block;
+    place-items: initial;
+  }
+  #root {
+    width: 100%;
+  }
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
